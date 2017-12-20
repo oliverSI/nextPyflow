@@ -19,6 +19,14 @@ class Task(object):
         self.name = '{}({})'.format(self.__class__.__name__, args_kwargs_str)
         self.core = 1
         self.docker = None
+        keys = inspect.getargspec(self.parameter)[0][1:]
+        values = list(args)
+        if inspect.getargspec(self.parameter)[3] is not None:
+            values += inspect.getargspec(self.parameter)[3]
+        for key, value in zip(keys, values):
+            setattr(self, key, value)
+        for key, value in kwargs.items():
+            setattr(self, key, value)
         self.parameter(*args, **kwargs)
 
     def parameter(self):
