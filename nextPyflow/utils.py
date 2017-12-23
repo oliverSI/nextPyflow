@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import task
 
-class infile(task.Task):
+class localfile(task.Task):
     def parameter(self, filename):
         self.filename = filename
 
