@@ -53,6 +53,8 @@ class bam_sort(nextPyflow.Task):
         '''
 ```
 
+Tasks are defined by Python classes which inherit from `nextPyflow.Task()` class. If a task need to take arguments, you can specify in `parameter()` method instead of `__init__()` method. The arguments are automatically set as instance attributes. If you specify a "docker" attribute, the task is executed in the docker container. The `requires()` method is used to specify dependencies on other tasks. The `run()` method is used to specify the command line to execute. In the `run()` method, you can use a templates library Mako's syntax and API, and you can access to the class instance as "self_". The command line is executed in the task directory, where the symbolic link of the output from required tasks is created. `localfile()` is pre-defined task for importing a local file to workflow.
+
 Pipelines should be run like this
 ```
 workflow = nextPyflow.Workflow(max_core=1)
