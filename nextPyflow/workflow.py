@@ -77,7 +77,8 @@ class Workflow(object):
         statuses = [self.dag.nodes[task]['runner'].status == DONE for task in self.dag.nodes]
         if all(statuses):
             tmp_dir = os.path.join(self.work_dir, 'tmp')
-            shutil.rmtree(tmp_dir)
+            if os.path.exists(tmp_dir):
+                shutil.rmtree(tmp_dir)
             return
         self.start()
             

@@ -74,8 +74,11 @@ class Runner(object):
                 exit()
             os.symlink(filepath, os.path.join(tmp_dir, os.path.basename(filepath)))
         os.chdir(tmp_dir)
-        cmd_template = Template(self.task.run())
-        cmd = cmd_template.render(self_=self.task)
+        if self.task.run() is None:
+            cmd = ''
+        else:
+            cmd_template = Template(self.task.run())
+            cmd = cmd_template.render(self_=self.task)
         os.chdir(current_dir)
         shutil.rmtree(tmp_dir)
         return cmd
