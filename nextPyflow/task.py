@@ -14,16 +14,17 @@ class Task(object):
     def __init__(self, *args, **kwargs):
         self.args = args
         self.kwargs = kwargs
-        args_list = [str(value) for value in args]
-        kwargs_list = ['{}={}'.format(key, value) for key, value in kwargs.items()]
+        args_names = inspect.getargspec(self.parameter).args[1:len(args)+1]
+        args_list = [str(value) for name, value in zip(args_names, args) if not name.startswith('_')]
+        kwargs_list = ['{}={}'.format(name, value) for name, value in kwargs.items() if not name.startswith('_')]
         args_kwargs_str = ', '.join(args_list+kwargs_list)
         self.name = '{}({})'.format(self.__class__.__name__, args_kwargs_str)
         self.core = 1
         self.docker = None
-        keys = inspect.getargspec(self.parameter)[0][1:]
+        keys = inspect.getargspec(self.parameter).args[1:]
         values = list(args)
-        if inspect.getargspec(self.parameter)[3] is not None:
-            values += inspect.getargspec(self.parameter)[3]
+        if inspect.getargspec(self.parameter).defaults is not None:
+            values += inspect.getargspec(self.parameter).defaults
         for key, value in zip(keys, values):
             setattr(self, key, value)
         for key, value in kwargs.items():
