@@ -73,20 +73,20 @@ class Workflow(object):
                 logger.error('%s', task.name)
                 logger.error('%s', os.path.join(runner.task_dir, '.command.log'))
                 exit()        
-        time.sleep(1)
-        statuses = [self.dag.nodes[task]['runner'].status == DONE for task in self.dag.nodes]
-        if all(statuses):
-            tmp_dir = os.path.join(self.work_dir, 'tmp')
-            if os.path.exists(tmp_dir):
-                shutil.rmtree(tmp_dir)
-            return
-        self.start()
+        statuses = [self.dag.nodes[task]['runner'].status == DONE for task in self.dag.nodes]        
+        return all(statuses)
             
     def run(self, task):
         self.dag = self._make_dag(task)
         signal.signal(signal.SIGINT, self._exit)
-        self.start()
-        
+        while True:
+            if self.start():
+                break
+            time.sleep(1)
+        tmp_dir = os.path.join(self.work_dir, 'tmp')
+        if os.path.exists(tmp_dir):
+            shutil.rmtree(tmp_dir)
+
     def _exit(self, *args):
         logger.error('Exiting')
         tmp_dir = os.path.join(self.work_dir, 'tmp')
