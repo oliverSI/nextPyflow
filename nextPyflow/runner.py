@@ -48,7 +48,7 @@ class Runner(object):
         else:
             subprocess.Popen(['/bin/bash', '.command.run'],
                              cwd=self.task_dir, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        return self.hash
+        return
 
     def get_output(self):
         output = []

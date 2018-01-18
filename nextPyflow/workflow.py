@@ -25,7 +25,11 @@ class Workflow(object):
         self.params = params
         
     def _make_dag(self, task, dag=nx.DiGraph()):
-        for required_task in task.requires():
+        if hasattr(task.requires(), '__iter__'):
+            requires = task.requires()
+        else:
+            requires = [task.requires()]
+        for required_task in requires:
             dag.add_node(required_task, runner=runner.Runner())
             dag.add_node(task, runner=runner.Runner())
             dag.add_edge(required_task, task)
@@ -55,10 +59,9 @@ class Workflow(object):
                     input += required_runner.get_output()
                 runner.set(task, self.work_dir, input)            
             if runner.status == PENDING:
-                if not runner.hash in self.processes \
-                   and self.max_core >= self.core + task.core:
+                if self.max_core >= self.core + task.core:
                     logger.info('Starting %s, hash:%s', task.name, runner.hash)
-                    self.processes.append(runner.execute())
+                    runner.execute()
                     self.core += task.core
         for task in self.dag.nodes:
             runner = self.dag.nodes[task]['runner']
