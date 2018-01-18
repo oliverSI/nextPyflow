@@ -13,7 +13,7 @@ class bwa_index(nextPyflow.Task):
     def parameter(self, ref_fasta):
         self.docker = 'kathrinklee/bwa:latest'
     def requires(self):
-        return [localfile(self.ref_fasta)]
+        return localfile(self.ref_fasta)
     def run(self):
         return '''                                                                                                                  
         <%! import os %>                                                                                                            
@@ -24,10 +24,10 @@ class bwa(nextPyflow.Task):
     def parameter(self, ref_fasta, fastq1, fastq2):
         self.docker = 'kathrinklee/bwa:latest'
     def requires(self):
-        return [localfile(self.ref_fasta),
-                localfile(self.fastq1),
-                localfile(self.fastq2),
-                bwa_index(self.ref_fasta)]
+        return (localfile(self.ref_fasta),
+               localfile(self.fastq1),
+               localfile(self.fastq2),
+               bwa_index(self.ref_fasta))
     def run(self):
         return '''                                                                                                                  
         <%! import os %>                                                                                                            
@@ -42,7 +42,7 @@ class bam_sort(nextPyflow.Task):
     def parameter(self, ref_fasta, fastq1, fastq2):
         self.docker = 'comics/samtools:latest'
     def requires(self):
-        return [bwa(self.ref_fasta, self.fastq1, self.fastq2)]
+        return bwa(self.ref_fasta, self.fastq1, self.fastq2)
     def run(self):
         return '''                                                                                                                  
         samtools sort \                                                                                                             
