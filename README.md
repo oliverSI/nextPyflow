@@ -128,4 +128,5 @@ workflow.run(bam_sort('/path/to/ref_fasta', '/path/to/fastq1', '/path/to/fastq2'
 
 The command line is executed in the task directory, where the symbolic link of the output from required tasks is created. In this example, a "docker" attribute is specified in the `parameter()` method, so the tasks are executed in docker container. `localfile()` is pre-defined task for importing a local file to workflow.
 
-
+## Future work
+Currently, tasks are executed in local machines.  I'm planning to provide the support for execution in cloud infrastructure via AWS batch. 
